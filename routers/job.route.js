@@ -6,6 +6,16 @@ const jobSchema = require("../validator/jobValidator");
 
 router.post("/apply", validate(jobSchema), jobController.applyJob);
 
-// router.patch("/:jobId", validate(jobSchema), jobController.updateJobApp);
+router.get("/", jobController.getJobApplications);
+
+router.get("/:jobId", jobController.getJobApplication);
+
+router.patch(
+  "/:jobId",
+  validate(jobSchema),
+  jobController.updateJobApplication,
+);
+
+router.delete("/:jobId", jobController.deleteJobApplication);
 
 module.exports = router;

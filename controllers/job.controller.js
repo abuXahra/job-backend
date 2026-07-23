@@ -37,7 +37,7 @@ exports.applyJob = AsyncHandler(async (req, res) => {
 });
 
 // retrieve all applications
-exports.getJobApps = AsyncHandler(async (req, res) => {
+exports.getJobApplications = AsyncHandler(async (req, res) => {
   const job = await Job.find({});
 
   if (!job) {
@@ -50,7 +50,59 @@ exports.getJobApps = AsyncHandler(async (req, res) => {
 });
 
 // retrive application
+exports.getJobApplication = AsyncHandler(async (req, res) => {
+  const { jobId } = req.params;
+
+  const job = await Job.findById(jobId);
+
+  if (!job) {
+    const error = new Error("Job application not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  res
+    .status(200)
+    .json({ message: "Job application fetch successfully", job: job });
+});
 
 // update application
+exports.updateJobApplication = AsyncHandler(async (req, res) => {
+  const { jobId } = req.params;
+
+  const job = await Job.findById(jobId);
+
+  if (!job) {
+    const error = new Error("Job application not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const updatedjob = await Job.findByIdAndUpdate(
+    jobId,
+    { $set: req.body },
+    { new: true },
+  );
+
+  res.status(200).json({
+    message: "Job application updated successfully",
+    job: updatedjob,
+  });
+});
 
 // delete application
+exports.deleteJobApplication = AsyncHandler(async (req, res) => {
+  const { jobId } = req.params;
+
+  const job = await Job.findById(jobId);
+
+  if (!job) {
+    const error = new Error("Job application not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  await Job.findByIdAndDelete(jobId);
+
+  res.status(200).json({ message: "Job application deleted successfully" });
+});
